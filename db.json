@@ -1,0 +1,55 @@
+{
+  "contacts": [
+    {
+      "name": "醫療",
+      "price": "49",
+      "src": "jpg/1.jpg",
+      "number": 1
+    },
+    {
+      "name": "玩樂",
+      "price": "99",
+      "src": "jpg/2.jpg",
+      "number": 1
+    },
+    {
+      "name": "照顧",
+      "price": "149",
+      "src": "jpg/3.jpg",
+      "number": 1
+    }
+  ],
+  "buy": [],
+  "bought": [
+    {
+      "items": [
+        {
+          "name": "醫療",
+          "price": "49",
+          "src": "jpg/1.jpg",
+          "number": 1,
+          "sum": 0,
+          "id": 1
+        },
+        {
+          "name": "玩樂",
+          "price": "99",
+          "src": "jpg/2.jpg",
+          "number": 1,
+          "sum": 0,
+          "id": 2
+        },
+        {
+          "name": "照顧",
+          "price": "149",
+          "src": "jpg/3.jpg",
+          "number": 1,
+          "sum": 0,
+          "id": 3
+        }
+      ],
+      "total": 297,
+      "id": 1
+    }
+  ]
+}

@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="zh-TW">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- icons -->
+  <script src="https://kit.fontawesome.com/8893d9bfa7.js" crossorigin="anonymous"></script>
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@900&family=Noto+Sans+TC&display=swap"
+    rel="stylesheet">
+  <!-- Magnific Popup core CSS file -->
+  <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
+  <!-- css -->
+  <link rel="stylesheet" href="all.css">
+
+  <title>Hello, pet</title>
+</head>
+
+<body>
+  <!-- <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+        <h2><i class="fas fa-dog"></i> Pet sitting</h2>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Veterinarian</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Gallery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              下拉式選單
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header> -->
+
+  <header>
+    <div class="nav">
+      <div class="navbar">
+        <h2>
+          <label for="check" class="fa fa-bars" onclick="move()"></label>
+          <a class="fas fa-dog" href="#"> Pet sitting</a>
+        </h2>
+        <div class="shop">
+          <div class="nofshop" v-if="carofitem()>0"><sup>{{carofitem()}}</sup></div>
+          <h2>
+            
+            <label for="shop" class="fas fa-shopping-cart" onclick="shop()">
+            </label>
+          </h2>
+        </div>
+      </div>
+      <input type="checkbox" id="check">
+      <ul class="menu">
+        <li>
+          <a href="">Home</a>
+        </li>
+        <li>
+          <a href="">About</a>
+        </li>
+        <li>
+          <a href="">Veterinarian</a>
+        </li>
+        <li>
+          <a href="">Services</a>
+        </li>
+        <li>
+          <a href="">Gallery</a>
+        </li>
+        <li>
+          <a href="">Pricing</a>
+        </li>
+        <li>
+          <a href="./blog.html">Blog</a>
+        </li>
+        <li>
+          <a href="">Contact</a>
+        </li>
+      </ul>
+      <label for="check" class="menu-bg" onclick="move()"></label>
+      <input type="checkbox" id="shop">
+      <div class="shoplist">
+        <h2>您的購買清單</h2>
+
+        <section v-if="loading">
+          <h3>loading...</h3>
+        </section>
+        <section v-else-if="!buy[0]">
+          <h3>購物車為空</h3>
+        </section>
+        <section v-else>
+          <h3>
+            <span>商品名</span>
+            <span>價格</span>
+            <span>數量</span>
+            <span>合計</span>
+          </h3>
+          <h3 v-for="(item,index) in buy">
+            <span><img :src="item.src">{{item.name}}</span>
+            <span>{{item.price}}</span>
+            <span><input type="number" v-model="item.number"></span>
+            <span>{{item.price*item.number}}</span>
+          </h3>
+
+        </section>
+        <section v-if="buy[0]">
+          <h3>總價:{{this.totalprice()}}</h3>
+          <h3><button @click="submitbuy">確認並購買</button></h3>
+        </section>
+        <h2>已購買清單</h2>
+        <section v-if="!bought[0]">
+          <h3>沒買過東西</h3>
+        </section>
+        <section v-if="loading">
+          <h3>loading...</h3>
+        </section>
+        <section v-else>
+          <ul v-for="(item,index) in bought">商品{{index+1}}<button @click="cancelbuy(item,index)">刪除</button>
+            <li v-for="list in item.items" v-if="list.number!==0">
+              {{list.name}}購買{{list.number}}單價為{{list.price}}合計為{{list.price*list.number}}
+
+            </li>
+            總價:{{item.total}}
+          </ul>
+        </section>
+        <section v-else>沒有商品</section>
+      </div>
+      <label for="shop" class="shop-bg" onclick="shop()"></label>
+    </div>
+  </header>
+  <section>
+    <div class="banner">
+      <div class="text">
+        <h1>Hello, pet!</h1>
+        <p>最優質的寵物護理</p>
+        <hr>
+        <p>您的寵物舒服了</p>
+        <a class="btn" href="#" role="button">了解更多</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="home">
+      <div class="items">
+        <div class="jpg">
+          <img src="jpg/care.jpg" alt="">
+        </div>
+        <div class="text">
+          <h3>醫療</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci, cupiditate.</p>
+        </div>
+      </div>
+      <div class="items">
+        <div class="jpg">
+          <img src="jpg/happy.jpg" alt="">
+        </div>
+        <div class="text">
+          <h3>玩樂</h3>
+          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam, quo dolorum! Inventore similique veniam
+            corporis. At temporibus ex vel saepe?</p>
+        </div>
+      </div>
+      <div class="items">
+        <div class="jpg">
+          <img src="jpg/relax.jpg" alt="">
+        </div>
+        <div class="text">
+          <h3>照顧</h3>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi quae voluptatum incidunt, quas
+            consequatur quod autem voluptatibus distinctio in aperiam deleniti! Odit quod ipsam earum praesentium amet
+            architecto reiciendis nemo?</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="about">
+      <div class="jpg">
+        <img src="jpg/about.jpg" alt="">
+      </div>
+      <div class="text">
+        <h3>Why Choose Us?</h3>
+        <div class="text-sub">
+          <div class="items">
+            <div class="jpg-1">
+              <img src="jpg/happy.jpg" alt="">
+            </div>
+            <div class="text-1">
+              <h3>title</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, totam?</p>
+            </div>
+            <div class="jpg-1">
+              <img src="jpg/happy.jpg" alt="">
+            </div>
+            <div class="text-1">
+              <h3>title</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, totam?</p>
+            </div>
+          </div>
+          <div class="items">
+            <div class="jpg-1">
+              <img src="jpg/happy.jpg" alt="">
+            </div>
+            <div class="text-1">
+              <h3>title</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, totam?</p>
+            </div>
+            <div class="jpg-1">
+              <img src="jpg/happy.jpg" alt="">
+            </div>
+            <div class="text-1">
+              <h3>title</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, totam?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="counter-bg">
+      <div class="counter">
+        <div class="counter-box">
+          <div class="number" data-number="50">0</div>
+          <div class="text">Customer</div>
+        </div>
+        <div class="counter-box">
+          <div class="number" data-number="1150">0</div>
+          <div class="text">Professionals</div>
+        </div>
+        <div class="counter-box">
+          <div class="number" data-number="50">0</div>
+          <div class="text">Products</div>
+        </div>
+        <div class="counter-box">
+          <div class="number" data-number="150">0</div>
+          <div class="text">Pets Hosted</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="FAQ">
+      <div class="text">
+        <h3>Frequently Asks Questions</h3>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tenetur, veniam.</p>
+        <div class="btns" type="button" data-toggle="collapse" data-target="#btn-1" aria-expanded="true"
+          onclick="togglebtn(1)">How to train your pet dog?
+          <i class="fas fa-minus" id="change-1"></i>
+        </div>
+        <ul id="btn-1" class="collapse show" style="list-style: decimal;">
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+        </ul>
+        <div class="btns" type="button" data-toggle="collapse" data-target="#btn-2" aria-expanded="false"
+          onclick="togglebtn(2)">How to manage your pets?<i class="fas fa-plus" id="change-2"></i>
+        </div>
+        <ul id="btn-2" class="collapse">
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+        </ul>
+        <div class="btns" type="button" data-toggle="collapse" data-target="#btn-3" aria-expanded="false"
+          onclick="togglebtn(3)">What is the best grooming for your pets?<i class="fas fa-plus" id="change-3"></i>
+        </div>
+        <ul id="btn-3" class="collapse">
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+          <li>Lorem ipsum dolor sit amet.</li>
+        </ul>
+        <div class="btns" type="button" data-toggle="collapse" data-target="#btn-4" aria-expanded="false"
+          onclick="togglebtn(4)">What are those requirements for sitting pets?<i class="fas fa-plus" id="change-4"></i>
+        </div>
+        <ul id="btn-4" class="collapse">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum laudantium culpa sunt repellat, suscipit
+            dignissimos eaque cum doloremque praesentium pariatur.</p>
+        </ul>
+      </div>
+      <div class="jpg-box">
+        <div class="jpg">
+          <img src="jpg/see.jpg" alt="">
+          <div class="media">
+            <a class="play" href="https://www.youtube.com/watch?v=K46NmR74gpE">
+              <img src="jpg/play.jpeg" alt="">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="price">
+      <h3>Affordable Packages</h3>
+      <div class="flex-box">
+        <div class="box">
+          <div class="hot hide">hot</div>
+          <div class="jpg">
+            <img src="jpg/care.jpg" alt="">
+          </div>
+          <div class="text">
+            <h2>title</h2>
+            <sup>$</sup>
+            <h1>49</h1>
+            <sub>/mos</sub>
+            <ul>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+            </ul>
+          </div>
+          <div class="btn-box">
+            <div class="btn" onclick="buy(care)">加入購物車</div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="hot">hot</div>
+          <div class="jpg">
+            <img src="jpg/happy.jpg" alt="">
+          </div>
+          <div class="text">
+            <h2>title</h2>
+            <sup>$</sup>
+            <h1>99</h1>
+            <sub>/mos</sub>
+            <ul>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, i</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum</li>
+            </ul>
+          </div>
+          <div class="btn-box">
+            <div class="btn" onclick="buy(happy)">加入購物車</div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="hot hide">hot</div>
+          <div class="jpg">
+            <img src="jpg/relax.jpg" alt="">
+          </div>
+          <div class="text">
+            <h2>title</h2>
+            <sup>$</sup>
+            <h1>149</h1>
+            <sub>/mos</sub>
+            <ul>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum dolor.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum d.</li>
+              <li><span class="fas fa-check"></span>Lorem, ipsum d.</li>
+              <li><span class="fas fa-check"></span>ipsum dolor.</li>
+            </ul>
+          </div>
+          <div class="btn-box">
+            <div class="btn" onclick="buy(relax)">加入購物車</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="gallery">
+      <div class="title">
+        <h3>Pets Gallery</h3>
+      </div>
+      <div class="gallery-box">
+        <div class="jpg-1">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/banner.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+        <div class="jpg-2">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/care.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+        <div class="jpg-3">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/happy.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+        <div class="jpg-4">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/relax.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+        <div class="jpg-5">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/see.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+        <div class="jpg-6">
+          <div class="bg-opacity"></div>
+          <a class="fas fa-search-plus" href="jpg/about.jpg"></a>
+          <div class="text">
+            <h4>cat</h4>
+            <h2>dog</h2>
+          </div>
+        </div>
+      </div>
+  </section>
+  <section>
+    <div class="blog">
+      <div class="title">
+        <h3>Latest news from our blog</h3>
+      </div>
+      <div class="box">
+        <div class="blog-box" v-for="(item,index) in blog" v-if="index<3">
+          <!-- <div class="jpg" style="background: url(item.src)"> -->
+          <!-- <div class="jpg" :style="stylelist">6546465 -->
+          <div class="jpg">
+            <img :src="item.src" alt="">
+          </div>
+
+          <div class="text">
+            <span>{{item.time}}</span>
+            <p>{{item.title}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="form">
+      <div class="jpg"></div>
+      <div class="form-data">
+        <h2>Free Consultation</h2>
+        <form action="#">
+          <select class="form-control">
+            <option value="">Select services</option>
+            <option value="">Cat Sitting</option>
+            <option value="">Dog Walk</option>
+            <option value="">Pet Spa</option>
+            <option value="">Pet Grooming</option>
+          </select>
+          <div class="form-group">
+            <input type="text" placeholder="Your Name">
+            <input type="text" placeholder="Vehicle number">
+          </div>
+          <div class="form-group">
+            <div class="date">
+              <input type="date" placeholder="Date">
+              <span class="fa fa-calendar"></span>
+            </div>
+            <div class="time">
+              <input type="time" placeholder="Time">
+              <span class="fa fa-clock-o"></span>
+            </div>
+          </div>
+          <textarea name="" id="" cols="30" rows="7" placeholder="Message"></textarea>
+          <input type="submit" value="Send message" id="btn">
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="footer">
+      <div class="box">
+        <h4>Petsitting</h4>
+        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
+        <a href="#" class="fa fa-twitter"></a>
+        <a href="#" class="fa fa-facebook"></a>
+        <a href="#" class="fa fa-instagram"></a>
+      </div>
+      <div class="box">
+        <h4>Latest News</h4>
+        <div class="news">
+          <section v-for="(item,index) in blog" v-if="index===0||index===1">
+
+            <div class="jpg">
+              <img :src="item.src" alt="">
+            </div>
+            <div class="text">
+              <a href="">
+                <p>{{item.title}}</p>
+              </a>
+              <span>{{item.time}}</span>
+            </div>
+          </section>
+        </div>
+
+      </div>
+      <div class="box">
+        <h4>Quick Links</h4>
+        <ul>
+          <li>
+            <a href="#">Home</a>
+          </li>
+          <li>
+            <a href="#">About</a>
+          </li>
+          <li>
+            <a href="#">Services</a>
+          </li>
+          <li>
+            <a href="#">Works</a>
+          </li>
+          <li>
+            <a href="#">Blog</a>
+          </li>
+          <li>
+            <a href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>Have a Questions?</h4>
+        <ul>
+          <li>
+            <span class="fa fa-map"></span>
+            <span class="text">taiwan Lorem ipsum dolor sit amet consectetur adipisicing
+              elit. Tempora rem recusandae praesentium debitis et molestiae laborum delectus tempore harum
+              officiis.
+            </span>
+          </li>
+          <li>
+            <span class="fa fa-phone"></span><span class="text">0919546545</span>
+          </li>
+          <li>
+            <span class="fa fa-paper-plane"></span><span class="text">giuygig@ui.com</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>edit by cloud in 2020</p>
+    </div>
+  </footer>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <!-- Magnific Popup core JS file -->
+  <script src="magnific-popup/jquery.magnific-popup.js"></script>
+  <!-- axios  -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js'></script>
+  <!-- vue -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js'></script>
+  <script src="vue.js"></script>
+
+  <!-- js -->
+  <script src="javascript.js"></script>
+
+</body>
+
+</html>

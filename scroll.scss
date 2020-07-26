@@ -1,0 +1,67 @@
+.banner.show {
+  .bread {
+    bottom: 20%;
+    opacity: 1;
+    transition: all 0.8s;
+  }
+  .text {
+    top: 0;
+    opacity: 1;
+    transition: all 0.8s;
+  }
+}
+.home.show {
+  .items {
+    position: relative;
+    top: -80px;
+    opacity: 1;
+    transition: all 1.3s;
+  }
+}
+.counter-bg {
+  .counter.show {
+    opacity: 1;
+    bottom: 0;
+    transition: opacity 5s, bottom 1.5s;
+  }
+}
+.gallery.show {
+  .title {
+    h3 {
+      position: relative;
+      top: 0;
+      opacity: 1;
+      transition: all 2s;
+    }
+  }
+  .gallery-box {
+    position: relative;
+    top: 0;
+    opacity: 1;
+    transition: all 2s;
+  }
+}
+.blog.show {
+  .title {
+    top: 0;
+    opacity: 1;
+    transition: all 2s;
+  }
+  .box {
+    .blog-box {
+      top: 0;
+      opacity: 1;
+      transition: all 2s;
+    }
+  }
+}
+.footer.show {
+  .box {
+    a.fa {
+      position: relative;
+      top: 0;
+      opacity: 1;
+      transition: all 2s;
+    }
+  }
+}
